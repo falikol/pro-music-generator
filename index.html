@@ -1,0 +1,1808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Copyright Free | Pro Music Generator | TrendsTool Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .hidden{display:none !important;}
+    :root{
+      --glass: rgba(14,14,18,0.70);
+      --glass2: rgba(18,18,22,0.78);
+      --border: rgba(148,163,184,0.22);
+      --text: #e2e8f0;
+      --shadow: 0 18px 44px -12px rgba(0,0,0,0.78);
+    }
+
+    body{
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+      background:#000;
+      color:var(--text);
+      min-height:100vh;
+      overflow:hidden;
+      margin:0;
+    }
+
+    #video-background{
+      position:fixed;
+      right:0;bottom:0;
+      min-width:100%;
+      min-height:100%;
+      z-index:-1;
+      filter:brightness(0.35) saturate(1.05);
+    }
+
+    /* ✅ DESKTOP FIXED PANEL (NO SCROLL) */
+    .stage{
+      height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      overflow:hidden;
+    }
+
+    .watermark{
+      position:fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      z-index:0;
+      font-size:3.4rem;
+      font-weight:900;
+      color:rgba(255,255,255,0.06);
+      pointer-events:none;
+      letter-spacing:0.18em;
+      white-space:nowrap;
+    }
+    @media(min-width:768px){
+      .watermark{font-size:4.8rem;}
+    }
+
+    /* ✅ DESKTOP FRIENDLY: BIG PANEL + FIXED HEIGHT */
+    .app{
+      width:min(1200px, 96vw);
+      border-radius:20px;
+      background:var(--glass2);
+      border:1px solid rgba(148,163,184,0.22);
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      overflow:hidden;
+      position:relative;
+      z-index:2;
+
+      height:92vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .app-header{
+      padding:14px 14px 10px;
+      background:linear-gradient(180deg, rgba(99,179,237,0.14), rgba(0,0,0,0));
+      border-bottom:1px solid rgba(148,163,184,0.16);
+    }
+
+    .brand-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .brand-chip{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:rgba(99,179,237,0.10);
+      border:1px solid rgba(99,179,237,0.28);
+      box-shadow:0 0 0 4px rgba(99,179,237,0.06);
+      font-weight:900;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(226,232,240,0.92);
+      user-select:none;
+      white-space:nowrap;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background:rgba(52,211,153,0.96);
+      box-shadow:0 0 10px rgba(52,211,153,0.60);
+    }
+
+    .datetime{
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      color:rgba(226,232,240,0.78);
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.22);
+      background:rgba(0,0,0,0.30);
+      white-space:nowrap;
+      user-select:none;
+    }
+
+    /* ✅ NO SCROLL INSIDE BODY + FOOTER ALWAYS VISIBLE */
+    .app-body{
+      padding:12px 14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      flex:1;
+      overflow:hidden;
+    }
+
+    .card{
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.18);
+      background:rgba(0,0,0,0.24);
+      box-shadow:0 0 0 4px rgba(148,163,184,0.04);
+      padding:10px;
+    }
+
+    .card-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .card-title strong{
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:rgba(226,232,240,0.92);
+      user-select:none;
+    }
+    .card-title span{
+      font-size:12px;
+      color:rgba(226,232,240,0.68);
+      user-select:none;
+    }
+
+    .custom-file-label{
+      width:100%;
+      border-radius:14px;
+      padding:12px;
+      text-align:center;
+      font-weight:900;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      cursor:pointer;
+      user-select:none;
+      color:#000;
+      background:rgba(255,204,0,0.96);
+      border:2px solid rgba(255,160,0,0.95);
+      box-shadow:0 0 22px rgba(255,204,0,0.22);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    .custom-file-label:hover{
+      transform:translateY(-1px);
+      box-shadow:0 0 28px rgba(255,204,0,0.33);
+    }
+    .sr-only{
+      position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0;
+    }
+
+    button{
+      border:1px solid rgba(99,179,237,0.24);
+      background:linear-gradient(90deg, rgba(14,165,233,0.95), rgba(59,130,246,0.95));
+      color:#fff;
+      border-radius:14px;
+      padding:10px 12px;
+      font-weight:900;
+      letter-spacing:0.04em;
+      transition:transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+      box-shadow:0 10px 24px -16px rgba(0,0,0,0.85);
+    }
+    button:hover{
+      transform:translateY(-1px);
+      box-shadow:0 0 18px rgba(99,179,237,0.50);
+    }
+    button:disabled{
+      opacity:0.55;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+      background:linear-gradient(90deg, rgba(55,65,81,0.95), rgba(107,114,128,0.95));
+      border:1px solid rgba(148,163,184,0.18);
+    }
+
+    .btn-green{
+      background:linear-gradient(90deg, rgba(16,185,129,0.95), rgba(52,211,153,0.95));
+      border:1px solid rgba(52,211,153,0.24);
+    }
+    .btn-red{
+      background:linear-gradient(90deg, rgba(239,68,68,0.95), rgba(249,115,22,0.95));
+      border:1px solid rgba(239,68,68,0.20);
+    }
+    .btn-orange{
+      background:linear-gradient(90deg, rgba(255,204,0,0.98), rgba(255,160,0,0.98));
+      border:1px solid rgba(245,158,11,0.28);
+      color:#0b0b0b;
+    }
+    .btn-purple{
+      background:linear-gradient(90deg, rgba(99,102,241,0.95), rgba(168,85,247,0.95));
+      border:1px solid rgba(168,85,247,0.28);
+    }
+
+    .preset-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+    }
+    @media(min-width:768px){
+      .preset-grid{grid-template-columns:1fr 1fr 1fr;}
+    }
+
+    .preset-btn{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:10px 10px;
+      border-radius:14px;
+      font-size:12px;
+      text-transform:none;
+      font-weight:900;
+      background:linear-gradient(90deg, rgba(14,165,233,0.95), rgba(59,130,246,0.95));
+    }
+
+    .preset-btn.active{
+      background:linear-gradient(90deg, rgba(16,185,129,0.95), rgba(52,211,153,0.95));
+      border:1px solid rgba(52,211,153,0.40);
+      box-shadow:0 0 18px rgba(52,211,153,0.45);
+      animation:pulse 1.4s infinite alternate;
+    }
+    @keyframes pulse{
+      0%{transform:scale(1);}
+      50%{transform:scale(1.02);}
+      100%{transform:scale(1);}
+    }
+
+    .time-badge{
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(148,163,184,0.22);
+      color:rgba(226,232,240,0.88);
+      white-space:nowrap;
+    }
+
+    .play-row-2{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:8px;
+    }
+
+    .lengths{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:rgba(226,232,240,0.85);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    .message{
+      border-radius:14px;
+      padding:10px 12px;
+      border:1px solid rgba(99,179,237,0.26);
+      background:rgba(59,130,246,0.16);
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-size:12px;
+      overflow:hidden;
+      white-space:nowrap;
+      position:relative;
+    }
+    .scrolling{
+      display:inline-block;
+      white-space:nowrap;
+      animation:scroll-left 22s linear infinite;
+    }
+    @keyframes scroll-left{
+      0%{transform:translateX(100%);}
+      100%{transform:translateX(-100%);}
+    }
+
+    details{
+      border-radius:16px;
+      border:1px solid rgba(148,163,184,0.18);
+      background:rgba(0,0,0,0.24);
+      box-shadow:0 0 0 4px rgba(148,163,184,0.04);
+      padding:10px;
+    }
+    summary{
+      cursor:pointer;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      user-select:none;
+    }
+    summary::-webkit-details-marker{display:none;}
+    .summary-title{
+      font-weight:900;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(226,232,240,0.92);
+    }
+    .summary-sub{
+      font-size:12px;
+      color:rgba(226,232,240,0.65);
+    }
+
+    .controls-grid{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    @media(min-width:768px){
+      .controls-grid{grid-template-columns:1fr 1fr;}
+    }
+
+    .ctrl label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:12px;
+      color:rgba(226,232,240,0.82);
+      font-weight:800;
+    }
+    input[type="range"]{width:100%;}
+
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.78);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:12px;
+      backdrop-filter: blur(8px);
+    }
+    .modal{
+      width:min(92vw, 680px);
+      max-height:86vh;
+      overflow:auto;
+      background:rgba(14,14,18,0.92);
+      border:1px solid rgba(148,163,184,0.22);
+      border-radius:18px;
+      box-shadow:var(--shadow);
+      padding:14px;
+      color:rgba(226,232,240,0.95);
+    }
+    .modal h2{
+      font-weight:900;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+      color:rgba(125,211,252,0.95);
+      text-align:center;
+      margin:0 0 10px 0;
+      font-size:18px;
+    }
+    .modal h3{
+      font-weight:900;
+      margin-top:12px;
+      margin-bottom:6px;
+      color:rgba(186,230,253,0.95);
+      font-size:14px;
+    }
+    .modal p, .modal li{
+      font-size:13px;
+      line-height:1.6;
+      color:rgba(226,232,240,0.88);
+    }
+    .modal a{color:#60a5fa;text-decoration:none;}
+    .modal a:hover{text-decoration:underline;}
+
+    .close-btn{
+      width:100%;
+      margin-top:10px;
+    }
+
+    .pw-box{
+      border-radius:16px;
+      padding:12px;
+      background:rgba(255,204,0,0.96);
+      border:2px solid rgba(255,160,0,0.95);
+      box-shadow:0 0 18px rgba(255,204,0,0.22);
+      cursor:pointer;
+      user-select:none;
+      color:#000;
+      font-weight:900;
+      text-align:center;
+      letter-spacing:0.08em;
+      animation:dance 0.75s infinite ease-in-out;
+      text-transform:uppercase;
+    }
+    @keyframes dance{
+      0%{transform:translate(0,0) rotate(0deg);}
+      25%{transform:translate(1px,-1px) rotate(0.4deg);}
+      50%{transform:translate(0,0) rotate(0deg);}
+      75%{transform:translate(-1px,1px) rotate(-0.4deg);}
+      100%{transform:translate(0,0) rotate(0deg);}
+    }
+
+    .pw-reveal{
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      font-weight:900;
+      letter-spacing:0.16em;
+      background:rgba(0,0,0,0.30);
+      border:1px solid rgba(148,163,184,0.22);
+      color:rgba(226,232,240,0.95);
+      border-radius:14px;
+      padding:10px 12px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .pw-input{
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(148,163,184,0.22);
+      background:rgba(0,0,0,0.35);
+      color:rgba(226,232,240,0.95);
+      padding:10px 12px;
+      font-family: ui-monospace, Menlo, Consolas, monospace;
+      letter-spacing:0.10em;
+      outline:none;
+    }
+
+    .toast{
+      position:fixed;
+      bottom:16px;
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(16,185,129,0.18);
+      color:#d1fae5;
+      border:1px solid rgba(16,185,129,0.30);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:900;
+      font-size:12px;
+      z-index:10000;
+      box-shadow:0 0 0 4px rgba(16,185,129,0.08);
+      display:none;
+      user-select:none;
+    }
+
+    .footer{
+      padding:10px 14px 14px;
+      border-top:1px solid rgba(148,163,184,0.16);
+      background:rgba(0,0,0,0.20);
+      color:rgba(226,232,240,0.65);
+      font-size:12px;
+      text-align:center;
+    }
+    .footer a{color:#60a5fa;text-decoration:none;}
+    .footer a:hover{text-decoration:underline;}
+  </style>
+
+  <script>
+    window.openModal = function(id){
+      const m = document.getElementById(id);
+      if(!m) return;
+      m.classList.remove("hidden");
+      m.style.display="flex";
+      document.body.style.overflow="hidden";
+    };
+    window.closeModal = function(id){
+      const m = document.getElementById(id);
+      if(!m) return;
+      m.classList.add("hidden");
+      m.style.display="none";
+      document.body.style.overflow="";
+    };
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      ["privacyModal","howModal","pwModal"].forEach(id=>{
+        const m=document.getElementById(id);
+        if(m){m.classList.add("hidden");m.style.display="none";}
+      });
+      document.body.style.overflow="";
+    });
+
+    window.addEventListener("click",(e)=>{
+      if(e.target && e.target.classList.contains("modal-overlay")){
+        e.target.classList.add("hidden");
+        e.target.style.display="none";
+        document.body.style.overflow="";
+      }
+    });
+
+    window.addEventListener("keydown",(e)=>{
+      if(e.key==="Escape"){
+        ["privacyModal","howModal","pwModal"].forEach(id=>{
+          const m=document.getElementById(id);
+          if(m && !m.classList.contains("hidden")){
+            m.classList.add("hidden");
+            m.style.display="none";
+          }
+        });
+        document.body.style.overflow="";
+      }
+    });
+  </script>
+</head>
+
+<body>
+  <video autoplay muted loop id="video-background">
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-nebula-in-space-1250-large.mp4" type="video/mp4">
+  </video>
+
+  <div class="watermark">TRENDS TOOL HUB</div>
+
+  <div class="stage">
+    <div class="app">
+
+      <div class="app-header">
+        <div class="brand-row">
+          <div class="brand-chip">
+            <span class="dot"></span>
+            Copyright Free | Pro Music Generator | TrendsTool Hub
+          </div>
+          <div id="dateTime" class="datetime">Loading...</div>
+        </div>
+      </div>
+
+      <div class="app-body">
+
+        <div id="pwBox" class="pw-box">
+          CLICK HERE YOUR PASSWORD
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <strong>Upload Audio</strong>
+            <span>MP3 / WAV</span>
+          </div>
+          <label class="custom-file-label">
+            Choose File mp3/wav
+            <input type="file" id="audioFile" accept="audio/*" class="sr-only">
+          </label>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <strong>Presets (12)</strong>
+            <span>Preset Time</span>
+          </div>
+
+          <div class="preset-grid">
+            <button id="p1" class="preset-btn"><span>Slowed + Reverb</span><span id="t1" class="time-badge">--:--</span></button>
+            <button id="p2" class="preset-btn"><span>Lo-Fi Chill</span><span id="t2" class="time-badge">--:--</span></button>
+            <button id="p3" class="preset-btn"><span>Vocal Focus</span><span id="t3" class="time-badge">--:--</span></button>
+            <button id="p4" class="preset-btn"><span>Nightcore Remix</span><span id="t4" class="time-badge">--:--</span></button>
+            <button id="p5" class="preset-btn"><span>Slowed</span><span id="t5" class="time-badge">--:--</span></button>
+            <button id="p6" class="preset-btn"><span>Remix</span><span id="t6" class="time-badge">--:--</span></button>
+
+            <!-- ✅ NEW: True Reverb Studio Preset Pack (6) -->
+            <button id="p7" class="preset-btn"><span>True Reverb Studio</span><span id="t7" class="time-badge">--:--</span></button>
+            <button id="p8" class="preset-btn"><span>Cathedral Space</span><span id="t8" class="time-badge">--:--</span></button>
+            <button id="p9" class="preset-btn"><span>Wide Atmosphere</span><span id="t9" class="time-badge">--:--</span></button>
+            <button id="p10" class="preset-btn"><span>Deep Bass Punch</span><span id="t10" class="time-badge">--:--</span></button>
+            <button id="p11" class="preset-btn"><span>Clean Vocal Room</span><span id="t11" class="time-badge">--:--</span></button>
+            <button id="p12" class="preset-btn"><span>Studio Master FX</span><span id="t12" class="time-badge">--:--</span></button>
+          </div>
+
+          <div style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button id="resetBtn" class="btn-red">Reset</button>
+            <button id="downloadBtn" class="btn-purple" disabled>Download WAV</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <strong>Playback</strong>
+            <span>Preview + Export</span>
+          </div>
+
+          <div class="play-row-2">
+            <button id="playBtn" class="btn-green" disabled>Play / Pause</button>
+            <button id="previewBtn" class="btn-orange" disabled>Preview 30s</button>
+            <button id="stopBtn" class="btn-red" disabled>Stop</button>
+          </div>
+
+          <div id="lengthBox" class="lengths" style="margin-top:8px; display:none;">
+            <div>Original: <span id="origLen">0:00</span></div>
+            <div>Processed: <span id="procLen">0:00</span></div>
+          </div>
+        </div>
+
+        <details id="advancedPanel" open>
+          <summary>
+            <div>
+              <div class="summary-title">Advanced Controls</div>
+              <div class="summary-sub">Manual + Auto Bass Punch</div>
+            </div>
+            <div style="font-family:ui-monospace,Menlo,Consolas,monospace;color:rgba(226,232,240,0.7);">▼</div>
+          </summary>
+
+          <div class="controls-grid">
+            <div class="ctrl">
+              <label>Speed <span id="vSpeed">1.00x</span></label>
+              <input type="range" id="speed" min="0.5" max="1.85" value="1.0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Master Volume <span id="vVol">100%</span></label>
+              <input type="range" id="vol" min="0" max="1.5" value="1" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Reverb Mix <span id="vRev">0%</span></label>
+              <input type="range" id="reverb" min="0" max="1" value="0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Reverb Decay <span id="vDecay">1.0s</span></label>
+              <input type="range" id="decay" min="0.1" max="10.0" value="1.0" step="0.1">
+            </div>
+
+            <div class="ctrl">
+              <label>Bass Boost <span id="vBass">0 dB</span></label>
+              <input type="range" id="bass" min="-20" max="25" value="0" step="1">
+            </div>
+
+            <div class="ctrl">
+              <label>Treble Boost <span id="vTreble">0 dB</span></label>
+              <input type="range" id="treble" min="-20" max="20" value="0" step="1">
+            </div>
+
+            <div class="ctrl">
+              <label>Vocal Tone <span id="vVocal">0 dB</span></label>
+              <input type="range" id="vocal" min="-20" max="25" value="0" step="1">
+            </div>
+
+            <div class="ctrl">
+              <label>Pan <span id="vPan">Center</span></label>
+              <input type="range" id="pan" min="-1" max="1" value="0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Delay Time <span id="vDTime">0.0s</span></label>
+              <input type="range" id="dtime" min="0" max="1" value="0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Delay Feedback <span id="vDFb">0%</span></label>
+              <input type="range" id="dfb" min="0" max="0.9" value="0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Delay Mix <span id="vDMix">0%</span></label>
+              <input type="range" id="dmix" min="0" max="1" value="0" step="0.01">
+            </div>
+
+            <div class="ctrl">
+              <label>Fade Duration <span id="vFade">200 ms</span></label>
+              <input type="range" id="fade" min="0" max="10000" value="200" step="100">
+            </div>
+          </div>
+
+          <!-- ✅ NEW: AUTO BASS PUNCH MODE -->
+          <div style="margin-top:10px; display:grid; grid-template-columns:1fr; gap:8px;">
+            <button id="bassPunchBtn" class="btn-orange">Auto Bass Punch: OFF</button>
+          </div>
+
+          <div style="margin-top:10px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button id="saveBtn">Save Settings</button>
+            <button id="loadBtn">Load Settings</button>
+          </div>
+        </details>
+
+        <div class="card">
+          <div class="card-title">
+            <strong>Help & Policy</strong>
+            <span>Worldwide Friendly</span>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button id="howBtn">How To Use</button>
+            <button id="privacyBtn">Privacy Policy</button>
+          </div>
+        </div>
+
+        <div id="msgBox" class="message hidden">
+          <span id="msgText" class="scrolling"></span>
+        </div>
+
+      </div>
+
+      <!-- ✅ FOOTER UPDATED -->
+      <div class="footer">
+        © 2026 TrendTools Hub. All Rights Reserved. |
+        <a href="https://trendtoolshub.blogspot.com/" target="_blank">Official Website</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="pwModal" class="modal-overlay hidden" style="display:none;">
+    <div class="modal">
+      <h2>Password Access</h2>
+
+      <p style="margin:0 0 10px 0;">
+        This tool generates a brand-new 20-character password every time the page loads.
+        Read the guide first, then reveal your password and copy it.
+      </p>
+
+      <h3>How To Use</h3>
+      <p>
+        Welcome to the Copyright Free | Pro Music Generator | TrendsTool Hub. This browser-based tool helps you create slowed,
+        reverb, remix, and enhanced audio instantly without installing anything. Start by opening the password
+        guide and reading the instructions. Tap “Reveal Password” to display your unique 20-character password.
+        Click the password once to copy it automatically, then paste it into the unlock field and press “Unlock”.
+        After unlocking, upload your MP3 or WAV file. Use the preset buttons for instant sound styles, then fine-tune
+        the advanced controls if needed. Speed changes playback rate, Reverb Mix adds ambience, and Decay controls
+        the length of the reverb tail. Bass and Treble adjust tone balance, Vocal Tone boosts mid presence, and Pan
+        shifts stereo position. Delay adds echo with mix and feedback controls. Master Volume sets output strength.
+        Use Play/Pause to listen, Preview 30s for a quick check, Stop to reset playback, and Download to export WAV.
+        This software is owned and maintained by https://trendtoolshub.blogspot.com/ . If you want to buy the Pro version,
+        send a message in the comments section of this post or contact the official email listed on our website.
+      </p>
+
+      <p style="margin-top:10px; font-size:12px; opacity:0.9;">
+        © 2026 TrendTools Hub. All Rights Reserved.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+        <button id="revealPwBtn" class="btn-orange">Reveal Password</button>
+        <button id="openUnlockBtn">Open Unlock Box</button>
+      </div>
+
+      <div id="pwRevealWrap" style="margin-top:10px; display:none;">
+        <div style="font-weight:900; letter-spacing:0.06em; text-transform:uppercase; font-size:12px; margin-bottom:6px;">
+          Your Password (Click to Copy)
+        </div>
+        <div id="pwText" class="pw-reveal">********************</div>
+      </div>
+
+      <div id="unlockWrap" style="margin-top:10px; display:none;">
+        <div style="font-weight:900; letter-spacing:0.06em; text-transform:uppercase; font-size:12px; margin-bottom:6px;">
+          Unlock Tool
+        </div>
+        <input id="pwInput" class="pw-input" maxlength="20" placeholder="Paste password here..." />
+        <button id="unlockBtn" class="btn-green" style="width:100%; margin-top:8px;">Unlock Now</button>
+      </div>
+
+      <button class="close-btn btn-red" onclick="window.closeModal('pwModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- How Modal -->
+  <div id="howModal" class="modal-overlay hidden" style="display:none;">
+    <div class="modal">
+      <h2>How To Use</h2>
+      <h3>Quick Setup</h3>
+      <ul>
+        <li>Click the yellow password box and unlock the tool.</li>
+        <li>Upload your MP3/WAV audio file.</li>
+        <li>Select a preset to instantly apply a sound style.</li>
+        <li>Use Preview 30s for a fast check.</li>
+        <li>Use Download WAV to export your processed audio.</li>
+      </ul>
+
+      <h3>Owner</h3>
+      <p>
+        This software is owned and maintained by:
+        <a href="https://trendtoolshub.blogspot.com/" target="_blank">https://trendtoolshub.blogspot.com/</a>
+      </p>
+
+      <p style="margin-top:10px; font-size:12px; opacity:0.9;">
+        © 2026 TrendTools Hub. All Rights Reserved.
+      </p>
+
+      <button class="close-btn btn-red" onclick="window.closeModal('howModal')">Close</button>
+    </div>
+  </div>
+
+  <!-- Privacy Modal -->
+  <div id="privacyModal" class="modal-overlay hidden" style="display:none;">
+    <div class="modal">
+      <h2>Privacy Policy</h2>
+
+      <p>
+        TrendsTool Hub respects your privacy. This tool processes audio locally in your browser using Web Audio
+        technology. Uploaded files are not sent to our servers through this project code.
+      </p>
+
+      <h3>Data Collection</h3>
+      <p>
+        This tool does not require personal data. No account signup is required to use the audio editor.
+      </p>
+
+      <h3>Saved Settings</h3>
+      <p>
+        If you use “Save Settings”, your preferences are stored locally in your browser (LocalStorage).
+      </p>
+
+      <h3>Backlinks</h3>
+      <ul>
+        <li><strong>YouTube:</strong> <a href="https://www.youtube.com/@KolkataRedMusic" target="_blank">https://www.youtube.com/@KolkataRedMusic</a></li>
+        <li><strong>Owner:</strong> <a href="https://trendtoolshub.blogspot.com/" target="_blank">https://trendtoolshub.blogspot.com/</a></li>
+      </ul>
+
+      <p style="margin-top:10px; font-size:12px; opacity:0.9;">
+        © 2026 TrendTools Hub. All Rights Reserved.
+      </p>
+
+      <button class="close-btn btn-red" onclick="window.closeModal('privacyModal')">Close</button>
+    </div>
+  </div>
+
+  <div id="toast" class="toast">Copied</div>
+
+  <script>
+    function toast(msg="Copied"){
+      const t=document.getElementById("toast");
+      t.textContent=msg;
+      t.style.display="block";
+      setTimeout(()=>t.style.display="none", 1400);
+    }
+
+    function copyToClipboard(text){
+      if(navigator.clipboard && window.isSecureContext){
+        return navigator.clipboard.writeText(text);
+      }
+      const ta=document.createElement("textarea");
+      ta.value=text;
+      ta.style.position="fixed";
+      ta.style.left="-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      return Promise.resolve();
+    }
+
+    function formatTime(seconds){
+      const m=Math.floor(seconds/60);
+      const s=Math.floor(seconds%60);
+      return `${m}:${s<10?'0':''}${s}`;
+    }
+
+    function generatePassword20(){
+      const chars="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789";
+      let pw="";
+      for(let i=0;i<20;i++) pw += chars.charAt(Math.floor(Math.random()*chars.length));
+      return pw;
+    }
+
+    const runtimePassword = generatePassword20();
+    let unlocked=false;
+
+    const dateTimeEl = document.getElementById("dateTime");
+    const msgBox = document.getElementById("msgBox");
+    const msgText = document.getElementById("msgText");
+
+    const pwBox = document.getElementById("pwBox");
+    const revealPwBtn = document.getElementById("revealPwBtn");
+    const openUnlockBtn = document.getElementById("openUnlockBtn");
+    const pwRevealWrap = document.getElementById("pwRevealWrap");
+    const pwText = document.getElementById("pwText");
+    const unlockWrap = document.getElementById("unlockWrap");
+    const pwInput = document.getElementById("pwInput");
+    const unlockBtn = document.getElementById("unlockBtn");
+
+    const howBtn = document.getElementById("howBtn");
+    const privacyBtn = document.getElementById("privacyBtn");
+
+    const audioFile = document.getElementById("audioFile");
+
+    const playBtn = document.getElementById("playBtn");
+    const previewBtn = document.getElementById("previewBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const downloadBtn = document.getElementById("downloadBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const bassPunchBtn = document.getElementById("bassPunchBtn");
+
+    const lengthBox = document.getElementById("lengthBox");
+    const origLen = document.getElementById("origLen");
+    const procLen = document.getElementById("procLen");
+
+    const speed = document.getElementById("speed");
+    const vol = document.getElementById("vol");
+    const reverb = document.getElementById("reverb");
+    const decay = document.getElementById("decay");
+    const bass = document.getElementById("bass");
+    const treble = document.getElementById("treble");
+    const vocal = document.getElementById("vocal");
+    const pan = document.getElementById("pan");
+    const dtime = document.getElementById("dtime");
+    const dfb = document.getElementById("dfb");
+    const dmix = document.getElementById("dmix");
+    const fade = document.getElementById("fade");
+
+    const vSpeed = document.getElementById("vSpeed");
+    const vVol = document.getElementById("vVol");
+    const vRev = document.getElementById("vRev");
+    const vDecay = document.getElementById("vDecay");
+    const vBass = document.getElementById("vBass");
+    const vTreble = document.getElementById("vTreble");
+    const vVocal = document.getElementById("vVocal");
+    const vPan = document.getElementById("vPan");
+    const vDTime = document.getElementById("vDTime");
+    const vDFb = document.getElementById("vDFb");
+    const vDMix = document.getElementById("vDMix");
+    const vFade = document.getElementById("vFade");
+
+    const saveBtn = document.getElementById("saveBtn");
+    const loadBtn = document.getElementById("loadBtn");
+
+    const presetsBtns = [
+      document.getElementById("p1"), document.getElementById("p2"), document.getElementById("p3"),
+      document.getElementById("p4"), document.getElementById("p5"), document.getElementById("p6"),
+      document.getElementById("p7"), document.getElementById("p8"), document.getElementById("p9"),
+      document.getElementById("p10"), document.getElementById("p11"), document.getElementById("p12")
+    ];
+    const times = [
+      document.getElementById("t1"), document.getElementById("t2"), document.getElementById("t3"),
+      document.getElementById("t4"), document.getElementById("t5"), document.getElementById("t6"),
+      document.getElementById("t7"), document.getElementById("t8"), document.getElementById("t9"),
+      document.getElementById("t10"), document.getElementById("t11"), document.getElementById("t12")
+    ];
+
+    function setActivePreset(btn){
+      presetsBtns.forEach(b=>b.classList.remove("active"));
+      if(btn) btn.classList.add("active");
+    }
+
+    function showMessage(text){
+      msgText.textContent=text;
+      msgBox.classList.remove("hidden");
+    }
+
+    let audioContext;
+    let audioBuffer=null;
+    let sourceNode=null;
+    let isPlaying=false;
+    let startTime=0;
+    let pausedAt=0;
+    let progressInterval=null;
+
+    let previewTimeout=null;
+    const PREVIEW_SECONDS=30;
+
+    // SMART LOUDNESS
+    let analyserNode=null;
+    let autoGainRAF=null;
+    let smartGainNode=null;
+    let limiterNode=null;
+
+    const SMART_TARGET_RMS = 0.22;
+    const SMART_MAX_GAIN   = 2.2;
+    const SMART_MIN_GAIN   = 0.75;
+    const SMART_SMOOTHING  = 0.07;
+
+    // ✅ AUTO BASS PUNCH MODE
+    let bassPunchEnabled = false;
+    let bassPunchRAF = null;
+
+    function stopSmartGain(){
+      if(autoGainRAF){
+        cancelAnimationFrame(autoGainRAF);
+        autoGainRAF=null;
+      }
+    }
+    function startSmartGain(){
+      if(!analyserNode || !smartGainNode || !audioContext) return;
+      const timeData = new Uint8Array(analyserNode.fftSize);
+      const loop=()=>{
+        if(!isPlaying){
+          stopSmartGain();
+          return;
+        }
+        analyserNode.getByteTimeDomainData(timeData);
+        let sum=0;
+        for(let i=0;i<timeData.length;i++){
+          const x=(timeData[i]-128)/128;
+          sum += x*x;
+        }
+        const rms=Math.sqrt(sum/timeData.length);
+        let desired = rms > 0.0001 ? (SMART_TARGET_RMS / rms) : 1.0;
+        desired = Math.max(SMART_MIN_GAIN, Math.min(SMART_MAX_GAIN, desired));
+        const current = smartGainNode.gain.value;
+        const next = current + (desired - current) * SMART_SMOOTHING;
+        smartGainNode.gain.setValueAtTime(next, audioContext.currentTime);
+        autoGainRAF=requestAnimationFrame(loop);
+      };
+      if(!autoGainRAF){
+        autoGainRAF=requestAnimationFrame(loop);
+      }
+    }
+
+    function stopBassPunch(){
+      if(bassPunchRAF){
+        cancelAnimationFrame(bassPunchRAF);
+        bassPunchRAF=null;
+      }
+    }
+
+    function startBassPunch(){
+      if(!bassPunchEnabled || !analyserNode || !audioContext) return;
+      const dataArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+      const loop=()=>{
+        if(!isPlaying || !bassPunchEnabled){
+          stopBassPunch();
+          return;
+        }
+        analyserNode.getByteFrequencyData(dataArray);
+
+        // Low-frequency average: ~0Hz to ~220Hz
+        const lowBins = Math.min(30, dataArray.length);
+        let sum=0;
+        for(let i=0;i<lowBins;i++) sum += dataArray[i];
+        const avg = sum/lowBins; // 0..255
+
+        // Convert to punch boost range
+        const punch = (avg/255) * 6; // 0..6 dB
+
+        // Smoothly add boost on top of slider bass
+        const base = parseFloat(bass.value);
+        const target = Math.min(25, base + punch);
+
+        bassF.gain.setValueAtTime(target, audioContext.currentTime);
+
+        bassPunchRAF=requestAnimationFrame(loop);
+      };
+
+      if(!bassPunchRAF){
+        bassPunchRAF=requestAnimationFrame(loop);
+      }
+    }
+
+    let gainNode, masterGain;
+    let conv, dryGain, wetGain;
+    let bassF, trebleF, vocalF;
+    let panner;
+    let delayNode, delayFb, delayWet, delayDry;
+
+    function initAudio(){
+      if(!audioContext){
+        audioContext=new (window.AudioContext||window.webkitAudioContext)();
+
+        masterGain=audioContext.createGain();
+        gainNode=audioContext.createGain();
+
+        conv=audioContext.createConvolver();
+        dryGain=audioContext.createGain();
+        wetGain=audioContext.createGain();
+
+        bassF=audioContext.createBiquadFilter();
+        bassF.type="lowshelf";
+        bassF.frequency.value=150;
+
+        trebleF=audioContext.createBiquadFilter();
+        trebleF.type="highshelf";
+        trebleF.frequency.value=4000;
+
+        vocalF=audioContext.createBiquadFilter();
+        vocalF.type="peak";
+        vocalF.frequency.value=800;
+        vocalF.Q.value=1.5;
+
+        panner=audioContext.createStereoPanner();
+
+        delayNode=audioContext.createDelay(1.0);
+        delayFb=audioContext.createGain();
+        delayWet=audioContext.createGain();
+        delayDry=audioContext.createGain();
+
+        delayNode.connect(delayFb);
+        delayFb.connect(delayNode);
+
+        analyserNode = audioContext.createAnalyser();
+        analyserNode.fftSize = 2048;
+
+        smartGainNode = audioContext.createGain();
+        smartGainNode.gain.value = 1.0;
+
+        limiterNode = audioContext.createDynamicsCompressor();
+        limiterNode.threshold.value = -8;
+        limiterNode.knee.value = 12;
+        limiterNode.ratio.value = 12;
+        limiterNode.attack.value = 0.003;
+        limiterNode.release.value = 0.15;
+
+        gainNode.connect(delayDry);
+        gainNode.connect(delayNode);
+
+        delayNode.connect(delayWet);
+
+        delayDry.connect(vocalF);
+        delayWet.connect(vocalF);
+
+        vocalF.connect(bassF);
+        bassF.connect(trebleF);
+        trebleF.connect(panner);
+
+        panner.connect(dryGain);
+        panner.connect(wetGain);
+
+        wetGain.connect(conv);
+        conv.connect(masterGain);
+        dryGain.connect(masterGain);
+
+        masterGain.connect(smartGainNode);
+        smartGainNode.connect(limiterNode);
+        limiterNode.connect(analyserNode);
+        analyserNode.connect(audioContext.destination);
+      }
+      if(audioContext.state==="suspended"){audioContext.resume().catch(()=>{});}
+    }
+
+    function impulse(dec){
+      const sr=audioContext.sampleRate;
+      const len=Math.floor(sr*dec);
+      const imp=audioContext.createBuffer(2,len,sr);
+      const L=imp.getChannelData(0);
+      const R=imp.getChannelData(1);
+      for(let i=0;i<len;i++){
+        L[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+        R[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+      }
+      conv.buffer=imp;
+    }
+
+    function updateLabels(){
+      vSpeed.textContent = `${parseFloat(speed.value).toFixed(2)}x`;
+      vVol.textContent = `${Math.round(parseFloat(vol.value)*100)}%`;
+      vRev.textContent = `${Math.round(parseFloat(reverb.value)*100)}%`;
+      vDecay.textContent = `${parseFloat(decay.value).toFixed(1)}s`;
+      vBass.textContent = `${parseFloat(bass.value).toFixed(0)} dB`;
+      vTreble.textContent = `${parseFloat(treble.value).toFixed(0)} dB`;
+      vVocal.textContent = `${parseFloat(vocal.value).toFixed(0)} dB`;
+      vPan.textContent = parseFloat(pan.value)===0 ? "Center" : parseFloat(pan.value).toFixed(2);
+      vDTime.textContent = `${parseFloat(dtime.value).toFixed(2)}s`;
+      vDFb.textContent = `${Math.round(parseFloat(dfb.value)*100)}%`;
+      vDMix.textContent = `${Math.round(parseFloat(dmix.value)*100)}%`;
+      vFade.textContent = `${parseFloat(fade.value)} ms`;
+    }
+
+    function applyEffects(){
+      if(!audioContext) return;
+
+      masterGain.gain.value = parseFloat(vol.value);
+
+      bassF.gain.value = parseFloat(bass.value);
+      trebleF.gain.value = parseFloat(treble.value);
+      vocalF.gain.value = parseFloat(vocal.value);
+
+      panner.pan.value = parseFloat(pan.value);
+
+      const rm=parseFloat(reverb.value);
+      dryGain.gain.value = 1-rm;
+      wetGain.gain.value = rm;
+
+      impulse(parseFloat(decay.value));
+
+      delayNode.delayTime.value = parseFloat(dtime.value);
+      delayFb.gain.value = parseFloat(dfb.value);
+
+      const mix=parseFloat(dmix.value);
+      delayWet.gain.value = mix;
+      delayDry.gain.value = 1-mix;
+
+      if(sourceNode){sourceNode.playbackRate.value = parseFloat(speed.value);}
+      updateProcessedLength();
+    }
+
+    function updateProcessedLength(){
+      if(!audioBuffer) return;
+      const original=audioBuffer.duration;
+      const sp=parseFloat(speed.value);
+      origLen.textContent=formatTime(original);
+      if(!isPlaying){
+        procLen.textContent=formatTime(original/sp);
+      }
+    }
+
+    function updatePresetTimes(){
+      if(!audioBuffer){
+        times.forEach(x=>x.textContent="--:--");
+        return;
+      }
+      const original=audioBuffer.duration;
+      const calc=(sp)=>formatTime(original/sp);
+      times.forEach((t,i)=>{
+        const key = Object.keys(PRESETS)[i];
+        t.textContent = calc(PRESETS[key].speed);
+      });
+    }
+
+    function clearPreview(){
+      if(previewTimeout){clearTimeout(previewTimeout);previewTimeout=null;}
+    }
+
+    function startPlayback(fromStart=false){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      if(!audioBuffer){
+        showMessage("Please upload an audio file first.");
+        return;
+      }
+
+      initAudio();
+
+      if(sourceNode){
+        try{sourceNode.stop();}catch(e){}
+        sourceNode.disconnect();
+        sourceNode=null;
+      }
+
+      sourceNode=audioContext.createBufferSource();
+      sourceNode.buffer=audioBuffer;
+      sourceNode.connect(gainNode);
+
+      applyEffects();
+
+      smartGainNode.gain.setValueAtTime(1.0, audioContext.currentTime);
+
+      if(fromStart){pausedAt=0;}
+      startTime=audioContext.currentTime-pausedAt;
+      sourceNode.start(0, pausedAt);
+
+      isPlaying=true;
+      playBtn.textContent="Pause";
+      stopBtn.disabled=false;
+      downloadBtn.disabled=false;
+
+      startSmartGain();
+      startBassPunch();
+
+      clearInterval(progressInterval);
+      progressInterval=setInterval(()=>{
+        if(isPlaying && audioBuffer){
+          const pos=audioContext.currentTime-startTime;
+          procLen.textContent=`${formatTime(pos)} / ${formatTime(audioBuffer.duration/parseFloat(speed.value))}`;
+        }
+      },1000);
+
+      sourceNode.onended=()=>{
+        stopPlayback();
+      };
+    }
+
+    function pausePlayback(){
+      if(!isPlaying || !sourceNode) return;
+      clearPreview();
+      stopSmartGain();
+      stopBassPunch();
+
+      try{sourceNode.stop();}catch(e){}
+      sourceNode.disconnect();
+      sourceNode=null;
+
+      pausedAt=audioContext.currentTime-startTime;
+      isPlaying=false;
+
+      playBtn.textContent="Play";
+      stopBtn.disabled=true;
+      clearInterval(progressInterval);
+      updateProcessedLength();
+      showMessage("Playback paused.");
+    }
+
+    function stopPlayback(){
+      clearPreview();
+      stopSmartGain();
+      stopBassPunch();
+
+      if(sourceNode){
+        try{sourceNode.stop();}catch(e){}
+        sourceNode.disconnect();
+        sourceNode=null;
+      }
+      isPlaying=false;
+      pausedAt=0;
+      playBtn.textContent="Play";
+      stopBtn.disabled=true;
+      clearInterval(progressInterval);
+
+      updateProcessedLength();
+      showMessage("Playback stopped.");
+    }
+
+    function preview30(){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      if(!audioBuffer){
+        showMessage("Upload an audio file first.");
+        return;
+      }
+      stopPlayback();
+      startPlayback(true);
+      showMessage("Preview started: 30 seconds...");
+
+      clearPreview();
+      previewTimeout=setTimeout(()=>{
+        if(isPlaying){
+          stopPlayback();
+          showMessage("Preview finished (30 seconds).");
+        }
+      }, PREVIEW_SECONDS*1000);
+    }
+
+    // ✅ TOTAL 12 PRESETS (with True Reverb Studio Pack)
+    const PRESETS={
+      "Slowed + Reverb":{speed:0.70,reverb:0.65,decay:6.0,bass:8,treble:7,vocal:10,pan:0,dtime:0.30,dfb:0.35,dmix:0.18,vol:1.25,fade:500},
+      "Lo-Fi Chill":{speed:0.88,reverb:0.30,decay:2.0,bass:7,treble:-3,vocal:0,pan:-0.08,dtime:0.15,dfb:0.25,dmix:0.18,vol:1.25,fade:300},
+      "Vocal Focus":{speed:1.0,reverb:0.08,decay:1.0,bass:-6,treble:10,vocal:18,pan:0,dtime:0.18,dfb:0.20,dmix:0.12,vol:1.25,fade:250},
+      "Nightcore Remix":{speed:1.35,reverb:0.10,decay:1.2,bass:5,treble:12,vocal:9,pan:0.06,dtime:0.10,dfb:0.15,dmix:0.10,vol:1.25,fade:350},
+      "Slowed":{speed:0.65,reverb:0.15,decay:2.0,bass:5,treble:0,vocal:0,pan:0,dtime:0.40,dfb:0.45,dmix:0.25,vol:1.25,fade:600},
+      "Remix":{speed:1.0,reverb:0.35,decay:2.2,bass:10,treble:6,vocal:5,pan:0,dtime:0.25,dfb:0.40,dmix:0.30,vol:1.25,fade:300},
+
+      "True Reverb Studio":{speed:1.00,reverb:0.45,decay:3.2,bass:3,treble:4,vocal:2,pan:0,dtime:0.12,dfb:0.18,dmix:0.10,vol:1.25,fade:200},
+      "Cathedral Space":{speed:0.95,reverb:0.85,decay:8.5,bass:6,treble:-2,vocal:4,pan:0,dtime:0.35,dfb:0.45,dmix:0.20,vol:1.25,fade:650},
+      "Wide Atmosphere":{speed:0.90,reverb:0.65,decay:5.5,bass:4,treble:3,vocal:2,pan:-0.05,dtime:0.28,dfb:0.30,dmix:0.18,vol:1.25,fade:350},
+      "Deep Bass Punch":{speed:1.00,reverb:0.12,decay:1.4,bass:18,treble:2,vocal:2,pan:0,dtime:0.18,dfb:0.22,dmix:0.12,vol:1.25,fade:180},
+      "Clean Vocal Room":{speed:1.00,reverb:0.10,decay:1.1,bass:-4,treble:8,vocal:14,pan:0,dtime:0.14,dfb:0.16,dmix:0.08,vol:1.25,fade:220},
+      "Studio Master FX":{speed:1.05,reverb:0.28,decay:2.6,bass:8,treble:7,vocal:6,pan:0.03,dtime:0.22,dfb:0.26,dmix:0.14,vol:1.25,fade:260}
+    };
+
+    function applyPreset(name, btn){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      const p=PRESETS[name];
+
+      speed.value=p.speed;
+      reverb.value=p.reverb;
+      decay.value=p.decay;
+      bass.value=p.bass;
+      treble.value=p.treble;
+      vocal.value=p.vocal;
+      pan.value=p.pan;
+      dtime.value=p.dtime;
+      dfb.value=p.dfb;
+      dmix.value=p.dmix;
+      vol.value=p.vol;
+      fade.value=p.fade;
+
+      setActivePreset(btn);
+      updateLabels();
+
+      if(audioContext){
+        applyEffects();
+      }
+
+      showMessage(`Preset applied: ${name}. Smart Loudness keeps volume consistent.`);
+    }
+
+    function saveSettings(){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      const s={
+        speed:+speed.value, reverb:+reverb.value, decay:+decay.value,
+        bass:+bass.value, treble:+treble.value, vocal:+vocal.value,
+        pan:+pan.value, dtime:+dtime.value, dfb:+dfb.value, dmix:+dmix.value,
+        vol:+vol.value, fade:+fade.value, bassPunchEnabled:bassPunchEnabled,
+        time:new Date().toISOString()
+      };
+      localStorage.setItem("TTH_PRO_MUSIC_SETTINGS", JSON.stringify(s));
+      showMessage("Settings saved successfully.");
+    }
+
+    function loadSettings(){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      const raw=localStorage.getItem("TTH_PRO_MUSIC_SETTINGS");
+      if(!raw){
+        showMessage("No saved settings found.");
+        return;
+      }
+      try{
+        const s=JSON.parse(raw);
+        speed.value=s.speed ?? 1.0;
+        reverb.value=s.reverb ?? 0;
+        decay.value=s.decay ?? 1.0;
+        bass.value=s.bass ?? 0;
+        treble.value=s.treble ?? 0;
+        vocal.value=s.vocal ?? 0;
+        pan.value=s.pan ?? 0;
+        dtime.value=s.dtime ?? 0;
+        dfb.value=s.dfb ?? 0;
+        dmix.value=s.dmix ?? 0;
+        vol.value=s.vol ?? 1.25;
+        fade.value=s.fade ?? 200;
+
+        bassPunchEnabled = !!s.bassPunchEnabled;
+        bassPunchBtn.textContent = `Auto Bass Punch: ${bassPunchEnabled ? "ON" : "OFF"}`;
+
+        setActivePreset(null);
+        updateLabels();
+        if(audioContext) applyEffects();
+        showMessage("Settings loaded successfully.");
+      }catch(e){
+        showMessage("Saved settings are invalid.");
+      }
+    }
+
+    function audioBufferToWav(buffer){
+      const numOfChan=buffer.numberOfChannels;
+      const sampleRate=buffer.sampleRate;
+      const bytesPerSample=2;
+      const dataLength=buffer.length*numOfChan*bytesPerSample;
+      const totalLength=44+dataLength;
+      const view=new DataView(new ArrayBuffer(totalLength));
+      let offset=0;
+
+      function writeString(s){
+        for(let i=0;i<s.length;i++) view.setUint8(offset+i, s.charCodeAt(i));
+        offset+=s.length;
+      }
+      function writeU32(v){view.setUint32(offset,v,true);offset+=4;}
+      function writeU16(v){view.setUint16(offset,v,true);offset+=2;}
+
+      writeString("RIFF");
+      writeU32(totalLength-8);
+      writeString("WAVE");
+      writeString("fmt ");
+      writeU32(16);
+      writeU16(1);
+      writeU16(numOfChan);
+      writeU32(sampleRate);
+      writeU32(sampleRate*numOfChan*bytesPerSample);
+      writeU16(numOfChan*bytesPerSample);
+      writeU16(8*bytesPerSample);
+      writeString("data");
+      writeU32(dataLength);
+
+      const chans=[];
+      for(let i=0;i<numOfChan;i++) chans.push(buffer.getChannelData(i));
+
+      for(let i=0;i<buffer.length;i++){
+        for(let c=0;c<numOfChan;c++){
+          let sample=Math.max(-1, Math.min(1, chans[c][i]));
+          sample=sample<0? sample*0x8000 : sample*0x7FFF;
+          view.setInt16(offset, sample, true);
+          offset+=2;
+        }
+      }
+      return new Blob([view],{type:"audio/wav"});
+    }
+
+    async function downloadWav(){
+      if(!unlocked){
+        showMessage("Please unlock the tool first.");
+        window.openModal("pwModal");
+        return;
+      }
+      if(!audioBuffer){
+        showMessage("Upload audio first.");
+        return;
+      }
+      if(isPlaying){
+        showMessage("Pause or stop playback before downloading.");
+        return;
+      }
+
+      downloadBtn.disabled=true;
+      showMessage("Rendering WAV... please wait.");
+
+      try{
+        initAudio();
+        const sp=parseFloat(speed.value);
+        const length=Math.ceil(audioBuffer.duration * audioContext.sampleRate / sp);
+
+        const offline=new OfflineAudioContext(audioBuffer.numberOfChannels, length, audioContext.sampleRate);
+
+        const src=offline.createBufferSource();
+        src.buffer=audioBuffer;
+        src.playbackRate.value=sp;
+
+        const g=offline.createGain();
+        const master=offline.createGain();
+        master.gain.value=parseFloat(vol.value);
+
+        const conv2=offline.createConvolver();
+        const dry2=offline.createGain();
+        const wet2=offline.createGain();
+
+        const bass2=offline.createBiquadFilter();
+        bass2.type="lowshelf"; bass2.frequency.value=150; bass2.gain.value=parseFloat(bass.value);
+
+        const treble2=offline.createBiquadFilter();
+        treble2.type="highshelf"; treble2.frequency.value=4000; treble2.gain.value=parseFloat(treble.value);
+
+        const vocal2=offline.createBiquadFilter();
+        vocal2.type="peak"; vocal2.frequency.value=800; vocal2.Q.value=1.5; vocal2.gain.value=parseFloat(vocal.value);
+
+        const pan2=offline.createStereoPanner();
+        pan2.pan.value=parseFloat(pan.value);
+
+        const d2=offline.createDelay(1.0);
+        const fb2=offline.createGain();
+        const wetD=offline.createGain();
+        const dryD=offline.createGain();
+
+        d2.delayTime.value=parseFloat(dtime.value);
+        fb2.gain.value=parseFloat(dfb.value);
+
+        const dm=parseFloat(dmix.value);
+        wetD.gain.value=dm;
+        dryD.gain.value=1-dm;
+
+        d2.connect(fb2); fb2.connect(d2);
+
+        const rm=parseFloat(reverb.value);
+        dry2.gain.value=1-rm;
+        wet2.gain.value=rm;
+
+        (function(){
+          const dec=parseFloat(decay.value);
+          const sr=offline.sampleRate;
+          const len=Math.floor(sr*dec);
+          const imp=offline.createBuffer(2,len,sr);
+          const L=imp.getChannelData(0);
+          const R=imp.getChannelData(1);
+          for(let i=0;i<len;i++){
+            L[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+            R[i]=(Math.random()*2-1)*Math.pow(1-i/len,2);
+          }
+          conv2.buffer=imp;
+        })();
+
+        const limiter = offline.createDynamicsCompressor();
+        limiter.threshold.value = -8;
+        limiter.knee.value = 12;
+        limiter.ratio.value = 12;
+        limiter.attack.value = 0.003;
+        limiter.release.value = 0.15;
+
+        src.connect(g);
+
+        g.connect(dryD);
+        g.connect(d2);
+
+        d2.connect(wetD);
+
+        dryD.connect(vocal2);
+        wetD.connect(vocal2);
+
+        vocal2.connect(bass2);
+        bass2.connect(treble2);
+        treble2.connect(pan2);
+
+        pan2.connect(dry2);
+        pan2.connect(wet2);
+
+        wet2.connect(conv2);
+        conv2.connect(master);
+        dry2.connect(master);
+
+        master.connect(limiter);
+        limiter.connect(offline.destination);
+
+        src.start(0);
+        const rendered=await offline.startRendering();
+
+        const blob=audioBufferToWav(rendered);
+        const url=URL.createObjectURL(blob);
+
+        const a=document.createElement("a");
+        const now=new Date();
+        const ds=now.toISOString().slice(0,10).replace(/-/g,"");
+        const ts=now.toTimeString().slice(0,8).replace(/:/g,"");
+        a.href=url;
+        a.download=`Copyright_Free_Pro_Music_Generator_TrendsToolHub_${ds}_${ts}.wav`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        showMessage("Download complete. Your WAV file is ready.");
+      }catch(e){
+        showMessage("Download failed. Please try again.");
+      }finally{
+        downloadBtn.disabled=false;
+      }
+    }
+
+    function tickTime(){
+      const now=new Date();
+      dateTimeEl.textContent=now.toLocaleString("en-US", {
+        year:"numeric",month:"short",day:"2-digit",
+        hour:"2-digit",minute:"2-digit",second:"2-digit",
+        hour12:true
+      });
+    }
+
+    function lockUI(){
+      playBtn.disabled=true;
+      previewBtn.disabled=true;
+      stopBtn.disabled=true;
+      downloadBtn.disabled=true;
+      audioFile.disabled=true;
+      saveBtn.disabled=true;
+      loadBtn.disabled=true;
+      presetsBtns.forEach(b=>b.disabled=true);
+      bassPunchBtn.disabled=true;
+
+      [speed,vol,reverb,decay,bass,treble,vocal,pan,dtime,dfb,dmix,fade].forEach(x=>x.disabled=true);
+    }
+
+    function unlockUI(){
+      audioFile.disabled=false;
+      playBtn.disabled=!audioBuffer;
+      previewBtn.disabled=!audioBuffer;
+      stopBtn.disabled=true;
+      downloadBtn.disabled=!audioBuffer;
+      saveBtn.disabled=false;
+      loadBtn.disabled=false;
+      presetsBtns.forEach(b=>b.disabled=false);
+      bassPunchBtn.disabled=false;
+
+      [speed,vol,reverb,decay,bass,treble,vocal,pan,dtime,dfb,dmix,fade].forEach(x=>x.disabled=false);
+    }
+
+    document.addEventListener("DOMContentLoaded",()=>{
+      tickTime(); setInterval(tickTime, 1000);
+
+      lockUI();
+      updateLabels();
+      showMessage("Welcome to Copyright Free | Pro Music Generator | TrendsTool Hub. Click the yellow password box to unlock.");
+
+      pwBox.addEventListener("click",()=>window.openModal("pwModal"));
+
+      revealPwBtn.addEventListener("click",()=>{
+        pwRevealWrap.style.display="block";
+        pwText.textContent=runtimePassword;
+        showMessage("Password revealed. Click the password to copy.");
+      });
+
+      pwText.addEventListener("click", async ()=>{
+        if(pwText.textContent==="********************") return;
+        await copyToClipboard(runtimePassword);
+        toast("Password copied");
+        showMessage("Password copied. Paste it into the unlock box.");
+      });
+
+      openUnlockBtn.addEventListener("click",()=>{
+        unlockWrap.style.display="block";
+      });
+
+      unlockBtn.addEventListener("click",()=>{
+        const val=(pwInput.value||"").trim();
+        if(val.length!==20){
+          showMessage("Password must be exactly 20 characters.");
+          return;
+        }
+        if(val!==runtimePassword){
+          showMessage("Incorrect password. Copy it again and paste correctly.");
+          return;
+        }
+        unlocked=true;
+        unlockUI();
+        window.closeModal("pwModal");
+        showMessage("Unlocked successfully. Upload an audio file to begin.");
+      });
+
+      howBtn.addEventListener("click",()=>window.openModal("howModal"));
+      privacyBtn.addEventListener("click",()=>window.openModal("privacyModal"));
+
+      bassPunchBtn.addEventListener("click",()=>{
+        bassPunchEnabled = !bassPunchEnabled;
+        bassPunchBtn.textContent = `Auto Bass Punch: ${bassPunchEnabled ? "ON" : "OFF"}`;
+        if(isPlaying){
+          if(bassPunchEnabled){
+            startBassPunch();
+            showMessage("Auto Bass Punch enabled.");
+          }else{
+            stopBassPunch();
+            applyEffects();
+            showMessage("Auto Bass Punch disabled.");
+          }
+        }else{
+          showMessage(`Auto Bass Punch is now ${bassPunchEnabled ? "ON" : "OFF"}.`);
+        }
+      });
+
+      audioFile.addEventListener("change",(e)=>{
+        if(!unlocked){
+          showMessage("Please unlock the tool first.");
+          window.openModal("pwModal");
+          return;
+        }
+        const file=e.target.files[0];
+        if(!file) return;
+
+        initAudio();
+        showMessage("Loading audio... please wait.");
+
+        const reader=new FileReader();
+        reader.onload=async (ev)=>{
+          try{
+            audioBuffer=await audioContext.decodeAudioData(ev.target.result);
+            lengthBox.style.display="flex";
+            playBtn.disabled=false;
+            previewBtn.disabled=false;
+            downloadBtn.disabled=false;
+            updateProcessedLength();
+            updatePresetTimes();
+            showMessage("Audio loaded successfully. Select a preset or use Advanced Controls.");
+          }catch(err){
+            showMessage("Audio failed to load. Please try another file.");
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      });
+
+      playBtn.addEventListener("click",()=>{
+        if(!isPlaying) startPlayback(false);
+        else pausePlayback();
+      });
+
+      stopBtn.addEventListener("click", stopPlayback);
+      previewBtn.addEventListener("click", preview30);
+      downloadBtn.addEventListener("click", downloadWav);
+
+      [speed,vol,reverb,decay,bass,treble,vocal,pan,dtime,dfb,dmix,fade].forEach(sl=>{
+        sl.addEventListener("input",()=>{
+          updateLabels();
+          if(audioContext) applyEffects();
+        });
+      });
+
+      const keys = Object.keys(PRESETS);
+      presetsBtns.forEach((btn, i)=>{
+        btn.addEventListener("click",()=>applyPreset(keys[i], btn));
+      });
+
+      resetBtn.addEventListener("click",()=>{
+        speed.value=1.0;
+        vol.value=1.25;
+        reverb.value=0;
+        decay.value=1.0;
+        bass.value=0;
+        treble.value=0;
+        vocal.value=0;
+        pan.value=0;
+        dtime.value=0;
+        dfb.value=0;
+        dmix.value=0;
+        fade.value=200;
+
+        setActivePreset(null);
+        updateLabels();
+        if(audioContext) applyEffects();
+        showMessage("Settings reset to default.");
+      });
+
+      saveBtn.addEventListener("click", saveSettings);
+      loadBtn.addEventListener("click", loadSettings);
+    });
+  </script>
+</body>
+</html>
