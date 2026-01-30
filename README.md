@@ -11,7 +11,7 @@ This project is part of **TrendTools Hub Studio**, a web-based platform focused 
 
 ## 📸 Project Screenshot
 
-
+png-music-generator-ui.png.png
 
 *UI preview of the Copyright-Free Pro Music Generator tool*
 
