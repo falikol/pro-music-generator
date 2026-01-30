@@ -9,6 +9,8 @@ This project is part of **TrendTools Hub Studio**, a web-based platform focused 
 ## 🔗 Live Project Demo
 👉 https://youtu.be/9C-ooAxhU3g
 👉 https://youtu.be/1Gul95PuyLs
+👉 https://youtu.be/b0LzkE-aT-A
+👉 https://youtu.be/0UPKxxdzEaM
 
 ## 📸 Project Screenshot
 
