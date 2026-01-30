@@ -12,9 +12,25 @@ This project is part of **TrendTools Hub Studio**, a web-based platform focused 
 👉 https://youtu.be/b0LzkE-aT-A
 👉 https://youtu.be/0UPKxxdzEaM
 
-## 📸 Project Screenshot
+---
 
-![Pro Music Generator Interface](pro-music-generator-ui.png.png)
+## 📸 Pro Music Generator Screenshots
+
+### 1️⃣ Main Interface
+![Pro Music Generator Main UI](pro-music-generator-ui-1.png.png)
+
+### 2️⃣ Upload & Presets
+![Upload and Presets](pro-music-generator-ui-2.png.png)
+
+### 3️⃣ Playback Controls
+![Playback Controls](pro-music-generator-ui-3.png.png)
+
+### 4️⃣ Advanced Controls
+![Advanced Controls](pro-music-generator-ui-4.png.png)
+
+### 5️⃣ Password Access System
+![Password Access](pro-music-generator-ui-5.png.png)
+
 
 *UI preview of the Copyright-Free Pro Music Generator tool*
 
