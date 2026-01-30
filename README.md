@@ -7,7 +7,7 @@ This project is part of **TrendTools Hub Studio**, a web-based platform focused 
 ---
 
 ## 🔗 Live Project Demo
-👉 https://falikol.github.io/TrendTools-Hub-Studio/
+👉 https://youtu.be/whjauYtjNZo
 
 ## 📸 Project Screenshot
 
