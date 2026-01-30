@@ -7,7 +7,7 @@ This project is part of **TrendTools Hub Studio**, a web-based platform focused 
 ---
 
 ## 🔗 Live Project Demo
-👉 https://youtu.be/whjauYtjNZo
+👉 https://youtu.be/9C-ooAxhU3g
 
 ## 📸 Project Screenshot
 
